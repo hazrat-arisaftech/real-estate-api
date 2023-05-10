@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const User = require("../models/Users");
-const { json } = require("express/lib/response");
+const jwt = require("jsonwebtoken");
 
 // Signup
 router.post("/register", async (req, res) => {
@@ -30,7 +30,14 @@ router.post("/login", async (req, res) => {
   if (userExist) {
     bcrypt.compare(req.body.password, userExist.password, function (err, resp) {
       if (resp) {
-        res.status(200).json("Logged in");
+        // res.status(200).json("Logged in");
+        const token = jwt.sign({ id: userExist._id }, process.env.jwt_secret);
+        res
+          .cookie("accessToken", token, {
+            httpOnly: true,
+          })
+          .status(200)
+          .json("Logged in");
       } else {
         res.status(401).json("Wrong credentials");
       }

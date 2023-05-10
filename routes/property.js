@@ -1,30 +1,33 @@
 const router = require("express").Router();
 const Property = require("../models/Property");
-
+const verify = require("../middlewares/verify");
 // create post
-router.post("/propertypost", (req, res) => {
-  const {
-    title,
-    size,
-    location,
-    rooms,
-    baths,
-    price,
-    description,
-    propertyImg,
-  } = req.body;
-  const newProperty = new Property({
-    title,
-    size,
-    location,
-    rooms,
-    baths,
-    price,
-    description,
-    propertyImg,
-  });
-  newProperty.save();
-  return res.status(200).json(newProperty);
+router.post("/propertypost/:userid", verify, (req, res) => {
+  if (req.params.userid === req.user.id) {
+    const {
+      title,
+      size,
+      location,
+      rooms,
+      baths,
+      price,
+      description,
+      propertyImg,
+    } = req.body;
+    const newProperty = new Property({
+      title,
+      size,
+      location,
+      rooms,
+      baths,
+      price,
+      description,
+      propertyImg,
+    });
+    newProperty.save();
+    return res.status(200).json(newProperty);
+  }
+  return res.status(401).json("log in first");
 });
 
 // all properties
@@ -46,22 +49,28 @@ router.get("/singleproperty/:propertyid", async (req, res) => {
   return res.status(200).json(singleproperty);
 });
 // update property
-router.put("/propertypost/:userid/:propertyid", async (req, res) => {
-  const modifiedProperty = await Property.findByIdAndUpdate(
-    req.params.propertyid,
-    { $set: req.body },
-    { new: true }
-  );
-  if (!modifiedProperty) {
-    res.status(401).json("Something went wrong");
+router.put("/propertypost/:userid/:propertyid", verify, async (req, res) => {
+  if (req.user.id === req.params.userid) {
+    const modifiedProperty = await Property.findByIdAndUpdate(
+      req.params.propertyid,
+      { $set: req.body },
+      { new: true }
+    );
+    if (!modifiedProperty) {
+      res.status(401).json("Something went wrong");
+    }
+    return res.status(200).json({ modifiedPost: modifiedProperty });
   }
-  return res.status(200).json({ modifiedPost: modifiedProperty });
+  return res.status(401).json("You're not authorized");
 });
 
 // delete property
-router.delete("/propertypost/:userid/:propertyid", async (req, res) => {
-  await Property.findByIdAndDelete(req.params.propertyid);
-  return res.status(200).json("property Deleted");
+router.delete("/propertypost/:userid/:propertyid", verify, async (req, res) => {
+  if (req.user.id === req.params.userid) {
+    await Property.findByIdAndDelete(req.params.propertyid);
+    return res.status(200).json("property Deleted");
+  }
+  return res.status(401).json("You're not authorized");
 });
 
 // latest properties

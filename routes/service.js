@@ -1,16 +1,20 @@
 const router = require("express").Router();
 const Service = require("../models/Service");
+const verify = require("../middlewares/verify");
 
 // create post
-router.post("/servicepost", (req, res) => {
-  const { title, description, serviceImg } = req.body;
-  const newBlog = new Service({
-    title,
-    description,
-    serviceImg,
-  });
-  newBlog.save();
-  return res.status(200).json(newBlog);
+router.post("/servicepost/:userid", (req, res) => {
+  if (req.params.userid === req.user.id) {
+    const { title, description, serviceImg } = req.body;
+    const newBlog = new Service({
+      title,
+      description,
+      serviceImg,
+    });
+    newBlog.save();
+    return res.status(200).json(newBlog);
+  }
+  return res.status(401).json("you're not authorized");
 });
 
 // all services
@@ -32,22 +36,28 @@ router.get("/singleservice/:serviceid", async (req, res) => {
   return res.status(200).json(singleService);
 });
 // update post
-router.put("/servicepost/:userid/:serviceid", async (req, res) => {
-  const modifiedService = await Service.findByIdAndUpdate(
-    req.params.serviceid,
-    { $set: req.body },
-    { new: true }
-  );
-  if (!modifiedService) {
-    res.status(401).json("Something went wrong");
+router.put("/servicepost/:userid/:serviceid", verify, async (req, res) => {
+  if (req.params.userid === req.user.id) {
+    const modifiedService = await Service.findByIdAndUpdate(
+      req.params.serviceid,
+      { $set: req.body },
+      { new: true }
+    );
+    if (!modifiedService) {
+      res.status(401).json("Something went wrong");
+    }
+    return res.status(200).json({ modifiedPost: modifiedService });
   }
-  return res.status(200).json({ modifiedPost: modifiedService });
+  return res.status(401).json("You're not authorized");
 });
 
 // delete post
-router.delete("/servicepost/:userid/:serviceid", async (req, res) => {
-  await Service.findByIdAndDelete(req.params.serviceid);
-  return res.status(200).json("service Deleted");
+router.delete("/servicepost/:userid/:serviceid", verify, async (req, res) => {
+  if (req.params.userid === req.user.id) {
+    await Service.findByIdAndDelete(req.params.serviceid);
+    return res.status(200).json("service Deleted");
+  }
+  return res.status(401).json("You're not authorized");
 });
 
 module.exports = router;
