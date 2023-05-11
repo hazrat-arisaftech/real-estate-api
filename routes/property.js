@@ -1,34 +1,43 @@
 const router = require("express").Router();
 const Property = require("../models/Property");
 const verify = require("../middlewares/verify");
+const upload = require("../middlewares/fileUpload");
 // create post
-router.post("/propertypost/:userid", verify, (req, res) => {
-  if (req.params.userid === req.user.id) {
-    const {
-      title,
-      size,
-      location,
-      rooms,
-      baths,
-      price,
-      description,
-      propertyImg,
-    } = req.body;
-    const newProperty = new Property({
-      title,
-      size,
-      location,
-      rooms,
-      baths,
-      price,
-      description,
-      propertyImg,
-    });
-    newProperty.save();
-    return res.status(200).json(newProperty);
+router.post(
+  "/propertypost/:userid",
+  upload.single("file"),
+  verify,
+  (req, res) => {
+    if (req.params.userid === req.user.id) {
+      const file = req.file;
+      const str = file.path;
+      const path = "../" + str.replace(/\\/g, "/");
+      const {
+        title,
+        size,
+        location,
+        rooms,
+        baths,
+        price,
+        description,
+        propertyImg,
+      } = req.body;
+      const newProperty = new Property({
+        title,
+        size,
+        location,
+        rooms,
+        baths,
+        price,
+        description,
+        propertyImg: path,
+      });
+      newProperty.save();
+      return res.status(200).json(newProperty);
+    }
+    return res.status(401).json("log in first");
   }
-  return res.status(401).json("log in first");
-});
+);
 
 // all properties
 router.get("/properties", async (req, res) => {

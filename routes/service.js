@@ -1,15 +1,19 @@
 const router = require("express").Router();
 const Service = require("../models/Service");
 const verify = require("../middlewares/verify");
+const upload = require("../middlewares/fileUpload");
 
 // create post
-router.post("/servicepost/:userid", (req, res) => {
+router.post("/servicepost/:userid", upload.single("file"), (req, res) => {
   if (req.params.userid === req.user.id) {
     const { title, description, serviceImg } = req.body;
+
+    const str = file.path;
+    const path = "../" + str.replace(/\\/g, "/");
     const newBlog = new Service({
       title,
       description,
-      serviceImg,
+      serviceImg: path,
     });
     newBlog.save();
     return res.status(200).json(newBlog);
