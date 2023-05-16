@@ -3,6 +3,100 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/Users");
 const jwt = require("jsonwebtoken");
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Auth:
+ *       type: object
+ *       required:
+ *         - email
+ *         - userName
+ *         - password
+ *       properties:
+ *         id:
+ *           type: String
+ *           description: The auto-generated id of the blog
+ *         email:
+ *           type: String
+ *           description: Email
+ *         userName:
+ *            type: String
+ *            description: username
+ *         password:
+ *            type: String
+ *            description: password of your account
+ *         userImg:
+ *             type: String
+ *             description: "image.png"
+ *       example:
+ *         id: 6459da0179f931af21b804be
+ *         email: "hazratali3711@gmail.com"
+ *         userName: "Hazrat Ali"
+ *         password: "$2a$10$Gc2C3OMxGa5TR2L5YYqba..fwQZ43iC2r3Gs/55Obx3Ke0eaxM/8y"
+ *         userImg: "image.png"
+ *         createdAt: 2020-03-10T04:05:06.157Z
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Prooperty post
+ * /api/v1/retgister:
+ *   post:
+ *     summary: Create an account
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Auth'
+ *     responses:
+ *       200:
+ *         description: User Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Auth'
+ *       500:
+ *         description: Some server error
+ *
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Prooperty post
+ * /api/v1/login:
+ *   post:
+ *     summary: Create an account
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Auth'
+ *     responses:
+ *       200:
+ *         description: logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Auth'
+ *       500:
+ *         description: Some server error
+ *
+ */
+
+// Health
+router.get("/health", async (req, res) => {
+  return res.status(200).json({ server: "running" });
+});
+
 // Signup
 router.post("/register", async (req, res) => {
   const userExist = await User.findOne({ email: req.body.email });

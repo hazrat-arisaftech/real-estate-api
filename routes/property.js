@@ -2,6 +2,186 @@ const router = require("express").Router();
 const Property = require("../models/Property");
 const verify = require("../middlewares/verify");
 const upload = require("../middlewares/fileUpload");
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Property:
+ *       type: object
+ *       required:
+ *         - title
+ *         - size
+ *         - location
+ *         - rooms
+ *         - baths
+ *         - price
+ *         - description
+ *       properties:
+ *         id:
+ *           type: String
+ *           description: The auto-generated id of the blog
+ *         title:
+ *           type: String
+ *           description: The title of your property
+ *         size:
+ *           type: String
+ *           description: Size of your property
+ *         location:
+ *           type: String
+ *           description: Location of your property
+ *         rooms:
+ *           type: Number
+ *           description: Number of rooms
+ *         baths:
+ *           type: Number
+ *           description: Number of baths
+ *         price:
+ *           type: Number
+ *           description: Price of your property
+ *         description:
+ *            type: String
+ *            description: Description of your property
+ *         propertyImg:
+ *            type: String
+ *            description: Images of your property
+ *       example:
+ *         id: 645a107e8e07d3016478269c
+ *         title: "Property 1"
+ *         size: "100"
+ *         rooms: 5
+ *         baths: 3
+ *         price: 2000000
+ *         description: "This is description"
+ *         property: "image.png"
+ *         createdAt: 2020-03-10T04:05:06.157Z
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Blog
+ *   description: property posting
+ * paths:
+ *  /api/v1/propertypost/{userid}:
+ *   post:
+ *     summary: Create a property
+ *     tags: [Properties]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Property'
+ *     parameters:
+ *      - name: userid
+ *        in: path
+ *     responses:
+ *       200:
+ *         description: The created blog
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Property'
+ *       500:
+ *         description: Some server error
+ *
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: Property
+ *   description: update a property
+ * /api/v1/propertypost/:645b7c7de8e113dae5fa1137/645a107e8e07d3016478269c:
+ *   post:
+ *     security:
+ *       - cookieAuth: []
+ *       - jwtAuth: []
+ *     summary: Update a property
+ *     tags: [Properties]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Property'
+ *     responses:
+ *       200:
+ *         description: The created blog
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Property'
+ *       500:
+ *         description: Some server error
+ *
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: All properties
+ *   description: properties
+ * /api/v1/properties:
+ *   get:
+ *     summary: properties
+ *     tags: [Properties]
+ *     responses:
+ *       200:
+ *         description: The created blog
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Prooperty'
+ *       500:
+ *         description: Some server error
+ *
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: single property
+ *   description: Get a single property
+ * paths:
+ *   /api/v1/singleproperty/{propertyid}:
+ *    get:
+ *     summary: Single property
+ *     tags: [Properties]
+ *     parameters:
+ *      - name: propertyid
+ *        in: path
+ *     responses:
+ *       200:
+ *         description: The created blog
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Property'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: Delete
+ *   description: Delete a property
+ * /api/v1/blogpost/645a091da776c221d8336880/645a14deac9b6695de82526a:
+ *   delete:
+ *     summary: delete a property
+ *     tags: [Properties]
+ *     responses:
+ *       200:
+ *         description: Property deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Property'
+ *       500:
+ *         description: Some server error
+ *
+ */
+
 // create post
 router.post(
   "/propertypost/:userid",
