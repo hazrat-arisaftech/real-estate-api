@@ -72,21 +72,17 @@ const jwt = require("jsonwebtoken");
  *   description: Prooperty post
  * /api/v1/login:
  *   post:
- *     summary: Create an account
+ *     summary: Sign in
  *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Auth'
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: user
+ *         type: object
  *     responses:
  *       200:
  *         description: logged in successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Auth'
  *       500:
  *         description: Some server error
  *
@@ -120,6 +116,8 @@ router.post("/register", async (req, res) => {
 
 // Sing in
 router.post("/login", async (req, res) => {
+  console.log(req.body);
+  console.log(typeof req.body);
   const userExist = await User.findOne({ email: req.body.email });
   if (userExist) {
     bcrypt.compare(req.body.password, userExist.password, function (err, resp) {

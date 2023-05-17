@@ -134,22 +134,36 @@ const upload = require("../middlewares/fileUpload");
  */
 
 // create post
-router.post("/servicepost/:userid", upload.single("file"), (req, res) => {
-  if (req.params.userid === req.user.id) {
-    const { title, description, serviceImg } = req.body;
-
-    const str = file.path;
-    const path = "../" + str.replace(/\\/g, "/");
-    const newBlog = new Service({
-      title,
-      description,
-      serviceImg: path,
-    });
-    newBlog.save();
-    return res.status(200).json(newBlog);
+router.post(
+  "/servicepost/:userid",
+  verify,
+  upload.single("file"),
+  (req, res) => {
+    if (req.params.userid === req.user.id) {
+      const { title, description, serviceImg } = req.body;
+      const file = req.file;
+      let newService;
+      if (!file) {
+        newService = new Service({
+          title,
+          description,
+          serviceImg,
+        });
+      } else {
+        const str = file.path;
+        const path = "../" + str.replace(/\\/g, "/");
+        newService = new Service({
+          title,
+          description,
+          serviceImg: path,
+        });
+      }
+      newService.save();
+      return res.status(200).json(newService);
+    }
+    return res.status(401).json("you're not authorized");
   }
-  return res.status(401).json("you're not authorized");
-});
+);
 
 // all services
 router.get("/services", async (req, res) => {

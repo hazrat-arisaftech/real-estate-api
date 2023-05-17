@@ -185,13 +185,11 @@ const upload = require("../middlewares/fileUpload");
 // create post
 router.post(
   "/propertypost/:userid",
-  upload.single("file"),
   verify,
+  upload.single("file"),
   (req, res) => {
     if (req.params.userid === req.user.id) {
       const file = req.file;
-      const str = file.path;
-      const path = "../" + str.replace(/\\/g, "/");
       const {
         title,
         size,
@@ -202,16 +200,34 @@ router.post(
         description,
         propertyImg,
       } = req.body;
-      const newProperty = new Property({
-        title,
-        size,
-        location,
-        rooms,
-        baths,
-        price,
-        description,
-        propertyImg: path,
-      });
+
+      let newProperty;
+
+      if (!file) {
+        newProperty = new Property({
+          title,
+          size,
+          location,
+          rooms,
+          baths,
+          price,
+          description,
+          propertyImg,
+        });
+      } else {
+        const str = file.path;
+        const path = "../" + str.replace(/\\/g, "/");
+        newProperty = new Property({
+          title,
+          size,
+          location,
+          rooms,
+          baths,
+          price,
+          description,
+          propertyImg: path,
+        });
+      }
       newProperty.save();
       return res.status(200).json(newProperty);
     }

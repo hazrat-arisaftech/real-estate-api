@@ -193,6 +193,8 @@ const upload = require("../middlewares/fileUpload");
 //  */
 // create post
 router.post("/blogpost/:userid", verify, upload.single("file"), (req, res) => {
+  console.log(req.body);
+  // console.log(req.body);
   if (req.user.id === req.params.userid) {
     const { title, context, blogImg, tags, socials, comments } = req.body;
     const file = req.file;
@@ -209,7 +211,6 @@ router.post("/blogpost/:userid", verify, upload.single("file"), (req, res) => {
     } else {
       const str = file.path;
       const path = "../" + str.replace(/\\/g, "/");
-      // console.log(path);
       newBlog = new Blog({
         title,
         context,

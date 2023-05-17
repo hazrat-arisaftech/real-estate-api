@@ -14,6 +14,7 @@ const serviceRoute = require("./routes/service");
 const propertyRoute = require("./routes/property");
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     withCredentials: true,
