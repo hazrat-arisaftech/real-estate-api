@@ -24,6 +24,7 @@ app.use(
   })
 );
 
+app.use("/uploads", express.static("uploads"));
 const options = {
   definition: {
     openapi: "3.0.0",

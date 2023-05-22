@@ -193,7 +193,6 @@ const upload = require("../middlewares/fileUpload");
 //  */
 // create post
 router.post("/blogpost/:userid", verify, upload.single("file"), (req, res) => {
-  console.log(req.body);
   // console.log(req.body);
   if (req.user.id === req.params.userid) {
     const { title, context, blogImg, tags, socials, comments } = req.body;

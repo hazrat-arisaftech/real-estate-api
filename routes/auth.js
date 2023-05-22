@@ -69,23 +69,9 @@ const jwt = require("jsonwebtoken");
  * @swagger
  * tags:
  *   name: Auth
- *   description: Prooperty post
- * /api/v1/login:
- *   post:
- *     summary: Sign in
- *     tags: [Auth]
- *     consumes:
- *       - application/json
- *     parameters:
- *       - in: body
- *         name: user
- *         type: object
- *     responses:
- *       200:
- *         description: logged in successfully
- *       500:
- *         description: Some server error
- *
+ *   descriptioin: Login
+ * paths:
+ *  /api/v1/login
  */
 
 // Health

@@ -216,7 +216,10 @@ router.post(
         });
       } else {
         const str = file.path;
-        const path = "../" + str.replace(/\\/g, "/");
+        // const path = "../" + str.replace(/\\/g, "/");
+        const path = "http://localhost:5000/" + str.replace(/\\/g, "/");
+
+        // const path = str.replace(/\\/g, "/");
         newProperty = new Property({
           title,
           size,
@@ -281,7 +284,7 @@ router.delete("/propertypost/:userid/:propertyid", verify, async (req, res) => {
 // latest properties
 
 router.get("/latestproperties", async (req, res) => {
-  const latesPosts = await Property.find().sort({ dataField: -1 }).limit(6);
+  const latesPosts = await Property.find().sort({ createdAt: -1 }).limit(6);
   if (!latesPosts) {
     return res.status(404).json("something went wrong");
   }
