@@ -15,6 +15,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    wishlist: {
+      type: Array,
+      default: [],
+    },
     userImg: {
       type: String,
     },

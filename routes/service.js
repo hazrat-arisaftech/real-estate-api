@@ -151,7 +151,8 @@ router.post(
         });
       } else {
         const str = file.path;
-        const path = "../" + str.replace(/\\/g, "/");
+        // const path = "../" + str.replace(/\\/g, "/");
+        const path = "http://localhost:5000/" + str.replace(/\\/g, "/");
         newService = new Service({
           title,
           description,
