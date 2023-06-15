@@ -21,7 +21,8 @@ const blogSchema = new Schema(
       type: [String],
     },
     comments: {
-      type: [String],
+      type: Array,
+      default: [],
     },
   },
 

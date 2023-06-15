@@ -26,6 +26,10 @@ const propertySchema = new Schema(
       type: Number,
       // required: true,
     },
+    comments: {
+      type: Array,
+      default: [],
+    },
     description: {
       type: String,
       required: true,

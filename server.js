@@ -13,6 +13,8 @@ const blogRoute = require("./routes/blog");
 const serviceRoute = require("./routes/service");
 const propertyRoute = require("./routes/property");
 const wishlistRoute = require("./routes/wishlist");
+const commentRoute = require("./routes/comment");
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -57,6 +59,7 @@ app.use("/api/v1", blogRoute);
 app.use("/api/v1", serviceRoute);
 app.use("/api/v1", propertyRoute);
 app.use("/api/v1", wishlistRoute);
+app.use("/api/v1", commentRoute);
 
 mongoose
   .connect(process.env.MONGODB_URL, { useNewUrlParser: true })
