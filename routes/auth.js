@@ -2,6 +2,8 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const User = require("../models/Users");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const randomstring = require("randomstring");
 
 /**
  * @swagger
@@ -74,17 +76,75 @@ const jwt = require("jsonwebtoken");
  *  /api/v1/login
  */
 
+let transporter = nodemailer.createTransport({
+  host: "smtp.zoho.com",
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: "test@webhawksit.net", // generated ethereal user
+    pass: "AriSaf@$5212", // generated ethereal password
+  },
+});
+
+router.post("/send-otp", async (req, res) => {
+  const { email } = req.body;
+  const otp = randomstring.generate({ length: 4, charset: "numeric" });
+  try {
+    await User.findOneAndUpdate({ email }, { otp }, { upsert: true });
+    const mailOptions = {
+      from: '"REal Estate OTP" <test@webhawksit.net>',
+      to: email,
+      subject: "Real Estate OTP",
+      text: `Your OTP is ${otp}`,
+      html: `<b>Your OTP is ${otp}</b>`,
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        res.status(500).json("Failed to send OTP");
+      } else {
+        res.status(200).json("OTP sent successful");
+      }
+    });
+  } catch (err) {
+    res.status(500).json("Failed to store OTP");
+  }
+});
+router.post("/login/verify-otp", async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user || user.otp !== otp) {
+      res.status(400).json("Invalid OTP");
+      return;
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json("Password changed successfully");
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res.status(500).json("Failed to change password");
+  }
+});
+
 // Health
 router.get("/health", async (req, res) => {
   return res.status(200).json({ server: "running" });
 });
 
+router.get("/test", (req, res) => {
+  OTP();
+  res.json("test");
+});
 // Signup
 router.post("/register", async (req, res) => {
   const userExist = await User.findOne({ email: req.body.email });
   if (!userExist) {
     bcrypt.genSalt(10, function (err, salt) {
       if (err) return res.status(401).json("Something went wrong");
+
       bcrypt.hash(req.body.password, salt, function (err, hash) {
         const newUser = new User({
           email: req.body.email,
