@@ -77,12 +77,12 @@ const randomstring = require("randomstring");
  */
 
 let transporter = nodemailer.createTransport({
-  host: "smtp.zoho.com",
-  port: 587,
+  host: process.env.mail_host,
+  port: process.env.mail_port,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: "test@webhawksit.net", // generated ethereal user
-    pass: "AriSaf@$5212", // generated ethereal password
+    user: process.env.mail_user, // generated ethereal user
+    pass: process.env.mail_pass, // generated ethereal password
   },
 });
 
