@@ -2,32 +2,20 @@ const { Schema, model } = require("mongoose");
 
 const commentSchema = new Schema(
   {
-    title: {
+    userId: {
       type: String,
       required: true,
     },
-    context: {
+    postId: {
       type: String,
       required: true,
     },
-    blogImg: {
+    comment: {
       type: String,
-    },
-    tags: {
-      type: [String],
-      default: [""],
-    },
-    socials: {
-      type: [String],
-    },
-    comments: {
-      type: [String],
+      required: true,
     },
   },
-
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const Comment = new model("Comment", commentSchema);

@@ -209,7 +209,8 @@ router.post("/blogpost/:userid", verify, upload.single("file"), (req, res) => {
       });
     } else {
       const str = file.path;
-      const path = "../" + str.replace(/\\/g, "/");
+      // const path = "../" + str.replace(/\\/g, "/");
+      const path = "http://localhost:5000/" + str.replace(/\\/g, "/");
       newBlog = new Blog({
         title,
         context,
